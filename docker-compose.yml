@@ -22,7 +22,10 @@ services:
       - POSTGRES_DB=ewm-stats
       - POSTGRES_USER=java-explore-with-me
       - POSTGRES_PASSWORD=password
-      - TZ=Europe/Moscow
+
+#  ewm-service:
+#    ports:
+#      - "8080:8080"
 
 # ewm-db:
 #    image: postgres:15.3-alpine
