@@ -202,6 +202,7 @@ public class EventServiceImpl implements EventService {
             }
 
             List<ViewStatsDto> stats;
+
             try {
                 stats = Arrays.asList(objectMapper.readValue(objectMapper.writeValueAsString(response.getBody()), ViewStatsDto[].class));
             } catch (IOException exception) {
