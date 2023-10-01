@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.HitDto;
 import ru.practicum.ViewStatsDto;
+import ru.practicum.exception.DataException;
 import ru.practicum.model.Hit;
 import ru.practicum.repository.HitRepository;
 
@@ -29,6 +30,9 @@ public class HitServiceImpl implements HitService {
 
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (start != null && end != null && start.isAfter(end)) {
+            throw new DataException("Неправильный интервал.");
+        }
         if (uris.isEmpty() && unique) {
             return repository.getUniqueUrisStats(start, end);
         }

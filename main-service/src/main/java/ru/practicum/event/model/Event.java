@@ -53,4 +53,6 @@ public class Event {
     private EventState state;
     @Column(name = "title", length = 120)
     private String title;
+    @Column(name = "confirmed_requests")
+    private Long confirmedRequests;
 }

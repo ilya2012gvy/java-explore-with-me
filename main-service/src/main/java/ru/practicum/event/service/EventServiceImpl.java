@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,6 @@ import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.request.repository.RequestRepository;
 import ru.practicum.exception.ForbiddenException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ThrowableException;
 import ru.practicum.exception.ValidationException;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
@@ -128,7 +126,7 @@ public class EventServiceImpl implements EventService {
 
         create(http);
 
-        return toEventFull(event);
+        return EventMapper.toEventFull(event, 1L);
     }
 
     @Override
@@ -184,7 +182,11 @@ public class EventServiceImpl implements EventService {
     public Map<Long, Long> getEventsViews(List<Event> events) {
         Map<Long, Long> views = new HashMap<>();
 
-        Optional<LocalDateTime> minPublishedOn = events.stream()
+        List<Event> published = events.stream()
+                .filter(event -> event.getPublishedOn() != null)
+                .collect(Collectors.toList());
+
+        Optional<LocalDateTime> minPublishedOn = published.stream()
                 .map(Event::getPublishedOn)
                 .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo);
@@ -192,29 +194,28 @@ public class EventServiceImpl implements EventService {
         if (minPublishedOn.isPresent()) {
             LocalDateTime start = minPublishedOn.get();
             LocalDateTime end = LocalDateTime.now();
-            List<String> uris = events.stream()
-                    .map(id -> ("/events/" + id.getId()))
+            List<String> uris = published.stream()
+                    .map(Event::getId)
+                    .map(id -> ("/events/" + id))
                     .collect(Collectors.toList());
 
-            ResponseEntity<Object> response = statsClient.getStatistic(start, end, uris, true);
-            if (!HttpStatus.OK.equals(response.getStatusCode())) {
-                throw new ThrowableException("Неверный статус ответа от сервера статистики.");
-            }
-
-            List<ViewStatsDto> stats;
-
-            try {
-                stats = Arrays.asList(objectMapper.readValue(objectMapper.writeValueAsString(response.getBody()), ViewStatsDto[].class));
-            } catch (IOException exception) {
-                throw new ThrowableException("Неверный ответ от сервера статистики.");
-            }
-
+            List<ViewStatsDto> stats = getStats(start, end, uris, true);
             stats.forEach(stat -> {
                 Long eventId = Long.parseLong(stat.getUri().split("/", 0)[2]);
                 views.put(eventId, views.getOrDefault(eventId, 0L) + stat.getHits());
             });
         }
         return views;
+    }
+
+    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        ResponseEntity<Object> response = statsClient.getStatistic(start, end, uris, unique);
+
+        try {
+            return Arrays.asList(objectMapper.readValue(objectMapper.writeValueAsString(response.getBody()), ViewStatsDto[].class));
+        } catch (IOException exception) {
+            throw new ClassCastException(exception.getMessage());
+        }
     }
 
     @Override
@@ -329,11 +330,6 @@ public class EventServiceImpl implements EventService {
         return confirmedRequests;
     }
 
-    public void create(HttpServletRequest http) {
-        statsClient.create(appName, http.getRequestURI(), http.getRemoteAddr(),
-                LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
-    }
-
     private List<EventFullDto> toEventsFullDto(List<Event> events) {
         Map<Long, Long> views = getEventsViews(events);
         Map<Long, Long> confirmedRequests = getConfirmedRequest(events);
@@ -360,6 +356,11 @@ public class EventServiceImpl implements EventService {
                         confirmedRequests.getOrDefault(event.getId(), 0L),
                         views.getOrDefault(event.getId(), 0L)))
                 .collect(Collectors.toList());
+    }
+
+    public void create(HttpServletRequest http) {
+        statsClient.create(appName, http.getRequestURI(), http.getRemoteAddr(),
+                LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter));
     }
 
     private List<Event> getEventsList(String text, List<Long> categories, Boolean paid, LocalDateTime start,

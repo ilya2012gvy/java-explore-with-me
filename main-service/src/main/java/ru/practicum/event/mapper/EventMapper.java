@@ -33,6 +33,26 @@ public interface EventMapper {
                 .title(event.getTitle()).build();
     }
 
+    static EventFullDto toEventFull(Event event, Long views) {
+        return EventFullDto.builder()
+                .annotation(event.getAnnotation())
+                .category(toCategoryDto(event.getCategory()))
+                .confirmedRequests(event.getConfirmedRequests())
+                .createdOn(event.getCreatedOn())
+                .description(event.getDescription())
+                .eventDate(event.getEventDate())
+                .id(event.getId())
+                .initiator(toUserShortDto(event.getInitiator()))
+                .location(toLocation(event.getLocation()))
+                .paid(event.getPaid())
+                .participantLimit(event.getParticipantLimit())
+                .publishedOn(event.getPublishedOn())
+                .requestModeration(event.getRequestModeration())
+                .state(event.getState().toString())
+                .title(event.getTitle())
+                .views(views).build();
+    }
+
     static EventFullDto toEventFullDto(Event event, Long confirmedRequests, Long views) {
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())

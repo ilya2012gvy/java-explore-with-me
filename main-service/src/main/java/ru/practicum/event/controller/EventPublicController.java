@@ -3,7 +3,6 @@ package ru.practicum.event.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.enums.EventSort;
 import ru.practicum.event.dto.EventFullDto;
@@ -11,7 +10,6 @@ import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -21,12 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/events")
 @RequiredArgsConstructor
-@Validated
 public class EventPublicController {
     private final EventService service;
 
     @GetMapping("/{id}")
-    public EventFullDto getEvent(@PathVariable @NotNull Long id, HttpServletRequest http) {
+    public EventFullDto getEvent(@PathVariable Long id, HttpServletRequest http) {
         log.info("Получение подробной информации об опубликованном событии по его идентификатору: {}", id);
         return service.getEvent(id, http);
     }

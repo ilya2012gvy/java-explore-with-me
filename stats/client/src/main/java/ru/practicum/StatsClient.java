@@ -1,10 +1,9 @@
 package ru.practicum;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 @Service
 public class StatsClient extends BaseClient {
-    ObjectMapper objectMapper = new ObjectMapper();
     public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
@@ -29,7 +27,7 @@ public class StatsClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> create(String name, String uri, String ip, LocalDateTime timestamp) {
+    public void create(String name, String uri, String ip, LocalDateTime timestamp) {
 
         HitDto hit = HitDto.builder()
                 .app(name)
@@ -37,7 +35,7 @@ public class StatsClient extends BaseClient {
                 .ip(ip)
                 .timestamp(timestamp.format(formatter))
                 .build();
-        return post("/hit", hit);
+        post("/hit", hit);
     }
 
     public ResponseEntity<Object> getStatistic(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
