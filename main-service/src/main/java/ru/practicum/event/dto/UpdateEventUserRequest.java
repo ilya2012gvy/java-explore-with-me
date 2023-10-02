@@ -1,10 +1,8 @@
 package ru.practicum.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.enums.EventUserStateAction;
 import ru.practicum.event.location.dto.LocationDto;
 
@@ -17,21 +15,22 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateEventUserRequest {
     @Size(min = 20, max = 2000)
-    private String annotation;
-    private Long category;
+    String annotation;
+    Long category;
     @Size(min = 20, max = 7000)
-    private String description;
+    String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
     @Valid
-    private LocationDto location;
-    private Boolean paid;
+    LocationDto location;
+    Boolean paid;
     @PositiveOrZero
-    private Integer participantLimit;
-    private Boolean requestModeration;
-    private EventUserStateAction stateAction;
+    Integer participantLimit;
+    Boolean requestModeration;
+    EventUserStateAction stateAction;
     @Size(min = 3, max = 120)
-    private String title;
+    String title;
 }

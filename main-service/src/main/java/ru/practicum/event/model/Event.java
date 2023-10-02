@@ -1,9 +1,7 @@
 package ru.practicum.event.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.category.model.Category;
 import ru.practicum.enums.EventState;
 import ru.practicum.event.location.model.Location;
@@ -18,41 +16,42 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    Long id;
     @Column(name = "annotation", length = 2000)
-    private String annotation;
+    String annotation;
     @JoinColumn(name = "category_id")
     @ManyToOne(fetch = FetchType.EAGER)
-    private Category category;
+    Category category;
     @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    LocalDateTime createdOn;
     @Column(name = "description", length = 7000)
-    private String description;
+    String description;
     @Column(name = "event_date")
-    private LocalDateTime eventDate;
+    LocalDateTime eventDate;
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.EAGER)
-    private User initiator;
+    User initiator;
     @JoinColumn(name = "location_id")
     @ManyToOne(fetch = FetchType.EAGER)
-    private Location location;
+    Location location;
     @Column(name = "paid")
-    private Boolean paid;
+    Boolean paid;
     @Column(name = "participant_limit")
-    private Integer participantLimit;
+    Integer participantLimit;
     @Column(name = "published_on")
-    private LocalDateTime publishedOn;
+    LocalDateTime publishedOn;
     @Column(name = "request_moderation")
-    private Boolean requestModeration;
+    Boolean requestModeration;
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
-    private EventState state;
+    EventState state;
     @Column(name = "title", length = 120)
-    private String title;
+    String title;
     @Column(name = "confirmed_requests")
-    private Long confirmedRequests;
+    Long confirmedRequests;
 }

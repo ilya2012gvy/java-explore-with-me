@@ -186,7 +186,7 @@ public class RequestServiceImpl implements RequestService {
 
         List<ParticipationRequest> requests = requestRepository.findAllByIdIn(eventRequestStatus.getRequestIds());
         if (requests.size() != eventRequestStatus.getRequestIds().size()) {
-            throw new ForbiddenException("Некоторые заявки на участие не найдены!");
+            throw new ForbiddenException("Некоторые заявки на участие: " + requests.size() + " не найдены!");
         }
 
         if (!requests.stream()
