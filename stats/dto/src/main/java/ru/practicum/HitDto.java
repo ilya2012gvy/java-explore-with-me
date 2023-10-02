@@ -1,9 +1,7 @@
 package ru.practicum;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
@@ -13,17 +11,18 @@ import javax.validation.constraints.Size;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class HitDto {
-    private Long id;
+    Long id;
     @NotBlank
     @Size(max = 255)
-    private String app;
+    String app;
     @NotBlank
     @Size(max = 255)
-    private String uri;
+    String uri;
     @NotBlank
     @Size(max = 15)
-    private String ip;
+    String ip;
     @PastOrPresent
-    private String timestamp;
+    String timestamp;
 }

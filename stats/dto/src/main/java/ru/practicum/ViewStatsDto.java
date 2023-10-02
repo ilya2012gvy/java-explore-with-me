@@ -1,8 +1,11 @@
 package ru.practicum;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ViewStatsDto {
     public ViewStatsDto(String app, String uri, Long hits) {
         this.app = app;
@@ -10,7 +13,7 @@ public class ViewStatsDto {
         this.hits = hits;
     }
 
-    private String app;
-    private String uri;
-    private Long hits;
+    String app;
+    String uri;
+    Long hits;
 }

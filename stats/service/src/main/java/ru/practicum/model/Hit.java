@@ -1,9 +1,7 @@
 package ru.practicum.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -17,25 +15,26 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Hit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    Long id;
     @NotEmpty
     @NotNull
     @Column(name = "app")
-    private String app;
+    String app;
     @NotEmpty
     @NotNull
     @Column(name = "uri")
-    private String uri;
+    String uri;
     @NotEmpty
     @NotNull
     @Column(name = "ip")
-    private String ip;
+    String ip;
     @NotNull
     @PastOrPresent
     @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+    LocalDateTime timestamp;
 }
