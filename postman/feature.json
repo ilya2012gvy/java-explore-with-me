@@ -260,7 +260,7 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": "{{eid}}"
+									"value": "{{cid}}"
 								},
 								{
 									"key": "id",
@@ -375,7 +375,7 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": "{{eid}}"
+									"value": "{{cid}}"
 								},
 								{
 									"key": "id",
