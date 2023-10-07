@@ -260,7 +260,7 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": "{{uid}}"
+									"value": "{{eid}}"
 								},
 								{
 									"key": "id",
